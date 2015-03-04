@@ -17,3 +17,5 @@ RUN cd /etc/yum.repos.d && \
     source /opt/python/bin/activate && \
     IPYTHONDIR=/opt/ipython JULIA_PKGDIR=/opt/julia julia -e 'Pkg.init(); Pkg.add("IJulia")' && \
     chown -R researcher /opt/python /opt/ipython
+
+COPY /var /var
