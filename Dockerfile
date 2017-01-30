@@ -1,21 +1,21 @@
 FROM dit4c/dit4c-container-ipython:latest
 MAINTAINER Tim Dettrick <t.dettrick@uq.edu.au>
 
+# Install R
+#  - R
+#  - libcurl-devel (necessary for RCurl package, a dependency of devtools)
+RUN echo "deb https://cran.csiro.au/bin/linux/debian jessie-cran3/" >> /etc/apt/sources.list && \
+  apt-key adv --keyserver keys.gnupg.net --recv-key 381BA480 && \
+  apt-get update && \
+  apt-get install -y r-base libcurl4-openssl-dev libssl-dev && \
+  apt-get clean
+RUN Rscript -e \
+  " options(repos=structure(c(CRAN='https://cran.csiro.au'))); \
+    install.packages(c('repr', 'IRdisplay', 'evaluate', 'crayon', 'pbdZMQ', 'devtools', 'uuid', 'digest', 'RCurl', 'openssl', 'httr', 'git2r')); \
+    devtools::install_github('IRkernel/IRkernel'); \
+    IRkernel::installspec(user = FALSE)"
+
 # Install Octave
-RUN yum install -y ghostscript octave && \
-    source /opt/python/bin/activate && \
-    export IPYTHONDIR=/opt/ipython && \
-    pip install git+https://github.com/Calysto/metakernel.git#egg=metakernel && \
-    pip install octave_kernel
-
-# Install Julia
-RUN cd /etc/yum.repos.d && \
-    wget https://copr.fedoraproject.org/coprs/nalimilan/julia/repo/epel-7/nalimilan-julia-epel-7.repo && \
-    cd - && \
-    yum install -y julia nettle && \
-    mkdir -p /opt/julia && \
-    source /opt/python/bin/activate && \
-    IPYTHONDIR=/opt/ipython JULIA_PKGDIR=/opt/julia julia -e 'Pkg.init(); Pkg.add("IJulia")' && \
-    chown -R researcher /opt/python /opt/ipython
-
-COPY /var /var
+RUN apt-get install -y ghostscript octave && \
+  pip3 install octave_kernel && \
+  python3 -m octave_kernel.install
