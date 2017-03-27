@@ -14,8 +14,3 @@ RUN Rscript -e \
     install.packages(c('repr', 'IRdisplay', 'evaluate', 'crayon', 'pbdZMQ', 'devtools', 'uuid', 'digest', 'RCurl', 'openssl', 'httr', 'git2r')); \
     devtools::install_github('IRkernel/IRkernel'); \
     IRkernel::installspec(user = FALSE)"
-
-# Install Octave
-RUN apt-get install -y ghostscript octave && \
-  pip3 install octave_kernel && \
-  python3 -m octave_kernel.install
